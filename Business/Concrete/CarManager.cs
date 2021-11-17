@@ -31,14 +31,22 @@ namespace Business.Concrete
 
         public Car GetById(int id)
         {
-            return _carDal.GetById(id);
+            return _carDal.Get(p=> p.Id == id);
+        }
 
+        public List<Car> GetCarsByBrandId(int id)
+        {
+            return _carDal.GetAll(p => p.BrandId == id);
+        }
+
+        public List<Car> GetCarsByColorId(int id)
+        {
+            return _carDal.GetAll(p => p.ColorId == id);
         }
 
         public List<Car> GetList()
         {
             return _carDal.GetAll();
-
         }
 
         public void Update(Car car)
