@@ -11,9 +11,9 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             CarManager carManager = new CarManager(new EfCarDal());
-            foreach (var item in carManager.GetList())
+            foreach (var item in carManager.GetCarDetails())
             {
-                Console.WriteLine(item.Description);
+                Console.WriteLine("{0} / {1} / {2} / {3}",item.BrandName,item.ColorName,item.CarName,item.DailyPrice);
             }
         }
     }
