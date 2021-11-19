@@ -10,11 +10,17 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            CarManager carManager = new CarManager(new EfCarDal());
-            foreach (var item in carManager.GetCarDetails())
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+
+            var result = rentalManager.Add(new Rental
             {
-                Console.WriteLine("{0} / {1} / {2} / {3}",item.BrandName,item.ColorName,item.CarName,item.DailyPrice);
-            }
+                CarId = 1,
+                CustomerId = 3,
+                RentDate = DateTime.Now,
+                ReturnDate = DateTime.Today.AddDays(1)
+            });
+
+            Console.WriteLine(result.Message);
         }
     }
 }
