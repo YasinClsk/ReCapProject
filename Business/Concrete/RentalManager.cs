@@ -2,6 +2,7 @@
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,18 @@ namespace Business.Concrete
 
         public IResult Add(Rental rental)
         {
-            var rentalToAdd = _rentalDal.Get(r => r.CarId == rental.CarId);
-            if (rentalToAdd == null || rentalToAdd.ReturnDate < DateTime.Now.Date)
+            var results = _rentalDal.GetAll(r => r.CarId == rental.CarId);
+            foreach (var item in results)
             {
-                _rentalDal.Add(rental);
-                return new SuccessResult("Rental added.");
+                if (rental.RentDate < item.ReturnDate)
+                {
+                    return new ErrorResult("Rental conditions are not provided.");
+                }
             }
-            return new ErrorResult("Rental conditions are not provided.");
+            rental.RentDate = DateTime.Now;
+            rental.ReturnDate = DateTime.Now.AddDays(5);
+            _rentalDal.Add(rental);
+            return new SuccessResult("Rental added.");
         }
 
         public IResult Delete(Rental rental)
@@ -46,10 +52,17 @@ namespace Business.Concrete
             return new SuccessDataResult<Rental>(_rentalDal.Get(r => r.Id == id), "Rental getted");
         }
 
+        public IDataResult<List<RentalDetailDto>> GetRentalDetails()
+        {
+            return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails(), "Rentals listed");
+        }
+
         public IResult Update(Rental rental)
         {
             _rentalDal.Update(rental);
             return new SuccessResult("Rental updated.");
         }
+
+        
     }
 }
